@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="feature_mytodos_title">My todos</string>
+    <string name="feature_mytodos_done">Done</string>
+
+    <string name="feature_mytodos_error_list">Error getting the list</string>
+    <string name="feature_mytodos_add_todo">Add Todo</string>
+    <string name="feature_mytodos_ok">OK</string>
+</resources>

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="feature_addedittodo_add_todo">Add Todo</string>
+    <string name="feature_addedittodo_edit_todo">Edit Todo</string>
+    <string name="feature_addedittodo_name">Name</string>
+    <string name="feature_addedittodo_completed">Completed</string>
+    <string name="feature_addedittodo_save">Save</string>
+    <string name="feature_addedittodo_add_success">Todo added</string>
+    <string name="feature_addedittodo_update_success">Todo updated</string>
+    <string name="feature_addedittodo_ok">OK</string>
+    <string name="feature_addedittodo_error">Error: %s</string>
+    <string name="feature_addedittodo_error_add">Add error</string>
+    <string name="feature_addedittodo_error_update">Update error</string>
+
+</resources>
