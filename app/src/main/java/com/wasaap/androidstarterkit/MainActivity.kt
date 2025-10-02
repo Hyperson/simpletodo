@@ -5,6 +5,8 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.runtime.getValue
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.wasaap.androidstarterkit.ui.TodoApp
 import com.wasaap.androidstarterkit.ui.rememberTodoAppState
 import com.wasaap.core.androidstarterkit.designsystem.theme.TodoTheme
@@ -19,14 +21,15 @@ class MainActivity : ComponentActivity() {
         //val splashScreen = installSplashScreen()
         super.onCreate(savedInstanceState)
 
+
         setContent {
-            val appState = rememberTodoAppState()
+            val uiState by viewModel.uiState.collectAsStateWithLifecycle(initialValue = MainActivityUiState.Loading)
             val systemDark = isSystemInDarkTheme()
 
-            TodoTheme(darkTheme = systemDark) {
-                TodoApp(
-                    appState = appState,
-                )
+            val darkTheme = uiState.shouldUseDarkTheme(systemDark)
+
+            TodoTheme(darkTheme = darkTheme) {
+                TodoApp(appState = rememberTodoAppState())
             }
         }
     }

@@ -47,13 +47,15 @@ include(":core:designsystem")
 include(":feature:mytodos")
 include(":feature:settings")
 include(":feature:addedittodo")
+include(":core:datastore")
+include(":core:datastore-proto")
+include(":core:datastore-test")
+
 
 check(JavaVersion.current().isCompatibleWith(JavaVersion.VERSION_17)) {
     """
-    Now in Android requires JDK 17+ but it is currently using JDK ${JavaVersion.current()}.
+    TODO requires JDK 17+ but it is currently using JDK ${JavaVersion.current()}.
     Java Home: [${System.getProperty("java.home")}]
     https://developer.android.com/build/jdks#jdk-config-in-studio
     """.trimIndent()
 }
-
-

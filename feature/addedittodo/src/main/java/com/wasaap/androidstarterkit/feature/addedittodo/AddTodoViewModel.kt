@@ -5,8 +5,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.wasaap.androidstarterkit.core.domain.AddTodoUseCase
 import com.wasaap.androidstarterkit.core.domain.GetTodoByIdUseCase
+import com.wasaap.androidstarterkit.core.domain.common.Result
 import com.wasaap.androidstarterkit.core.domain.UpdateTodoCompletedUseCase
-import com.wasaap.androidstarterkit.core.domain.result.Result
 import com.wasaap.androidstarterkit.core.model.NewTodo
 import com.wasaap.androidstarterkit.core.model.UpdateTodo
 import dagger.assisted.Assisted

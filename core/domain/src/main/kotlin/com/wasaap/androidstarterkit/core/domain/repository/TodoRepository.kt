@@ -1,7 +1,7 @@
 package com.wasaap.androidstarterkit.core.domain.repository
 
 import com.wasaap.androidstarterkit.core.model.NewTodo
-import com.wasaap.androidstarterkit.core.domain.result.Result
+import com.wasaap.androidstarterkit.core.domain.common.Result
 import com.wasaap.androidstarterkit.core.model.Todo
 import com.wasaap.androidstarterkit.core.model.UpdateTodo
 import kotlinx.coroutines.flow.Flow

@@ -3,8 +3,8 @@ package com.wasaap.androidstarterkit.core.data.repository
 import com.wasaap.androidstarterkit.common.core.network.Dispatcher
 import com.wasaap.androidstarterkit.common.core.network.TodoDispatchers
 import com.wasaap.androidstarterkit.core.domain.repository.TodoRepository
-import com.wasaap.androidstarterkit.core.domain.result.Result
-import com.wasaap.androidstarterkit.core.domain.result.asResult
+import com.wasaap.androidstarterkit.core.domain.common.asResult
+import com.wasaap.androidstarterkit.core.domain.common.Result
 import com.wasaap.androidstarterkit.core.model.NewTodo
 import com.wasaap.androidstarterkit.core.model.Todo
 import com.wasaap.androidstarterkit.core.model.UpdateTodo
