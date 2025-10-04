@@ -194,7 +194,6 @@ class TodoNavigationSuiteScope internal constructor(
 @Composable
 fun TodoNavigationBarPreview() {
     val items = listOf("Todos", "Settings")
-    //TODO
     val icons = listOf(
         TodoIcons.ViewDay,
         TodoIcons.Settings,
@@ -234,7 +233,6 @@ fun TodoNavigationBarPreview() {
 @Composable
 fun TodoNavigationRailPreview() {
     val items = listOf("Todos", "Settings")
-    //TODO
     val icons = listOf(
         TodoIcons.ViewDay,
         TodoIcons.Settings,

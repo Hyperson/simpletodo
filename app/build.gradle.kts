@@ -51,6 +51,8 @@ dependencies {
     implementation(projects.core.data)
     implementation(projects.core.model)
 
+    implementation(projects.sync.work)
+
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.compose.material3)
     implementation(libs.androidx.compose.material3.adaptive)
@@ -64,6 +66,7 @@ dependencies {
     implementation(libs.androidx.navigation.compose)
     implementation(libs.coil.kt)
     implementation(libs.kotlinx.serialization.json)
+
 
     ksp(libs.hilt.compiler)
 

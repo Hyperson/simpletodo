@@ -1,30 +1,38 @@
 package com.wasaap.androidstarterkit.core.database.dao
 
 import androidx.room.Dao
-import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
 import com.wasaap.androidstarterkit.core.database.model.TodoEntity
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface TodoDao {
-    @Query("SELECT * FROM todos ORDER BY id ASC")
-    suspend fun getTodos(): List<TodoEntity>
 
-    @Query("SELECT * FROM todos WHERE id = :id")
-    suspend fun getTodoById(id: Int): TodoEntity?
+    @Query("SELECT * FROM todos")
+    fun getTodosStream(): Flow<List<TodoEntity>>
+
+    @Query("SELECT * FROM todos WHERE isSynced = 0")
+    suspend fun getPendingTodos(): List<TodoEntity>
+
+    @Query("SELECT * FROM todos WHERE localId = :id LIMIT 1")
+    fun getTodoByIdStream(id: String): Flow<TodoEntity?>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertTodo(todo: TodoEntity): Long
+    suspend fun insertOrReplace(todos: List<TodoEntity>)
+
+    @Query("SELECT * FROM todos WHERE localId = :id")
+    suspend fun getTodoById(id: String): TodoEntity?
 
     @Update
-    suspend fun updateTodo(todo: TodoEntity)
+    suspend fun updateTodos(todos: List<TodoEntity>)
 
-    @Delete
-    suspend fun deleteTodo(todo: TodoEntity)
+    @Query("DELETE FROM todos WHERE localId = :localId")
+    suspend fun deleteByLocalId(localId: String)
 
-    @Query("DELETE FROM todos WHERE id = :id")
-    suspend fun deleteTodoById(id: Int)
+    @Query("SELECT * FROM todos ORDER BY localId ASC")
+    suspend fun getTodos(): List<TodoEntity>
 }
+

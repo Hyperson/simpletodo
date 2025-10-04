@@ -4,6 +4,7 @@ import android.app.Application
 import android.content.pm.ApplicationInfo
 import android.os.StrictMode
 import android.os.StrictMode.ThreadPolicy.Builder
+import com.wasaap.androidstarterkit.sync.work.initializers.Sync
 import dagger.hilt.android.HiltAndroidApp
 
 @HiltAndroidApp
@@ -13,6 +14,7 @@ class AndroidStarterKitApplication : Application() {
         super.onCreate()
 
         setStrictModePolicy()
+        Sync.initialize(context = this)
     }
 
     /**

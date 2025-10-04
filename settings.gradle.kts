@@ -50,6 +50,8 @@ include(":feature:addedittodo")
 include(":core:datastore")
 include(":core:datastore-proto")
 include(":core:datastore-test")
+include(":sync:work")
+
 
 
 check(JavaVersion.current().isCompatibleWith(JavaVersion.VERSION_17)) {

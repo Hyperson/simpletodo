@@ -27,8 +27,8 @@ fun TodoNavHost(
             onAddTodoClick = {
                 navController.navigate(AddTodoRoute())
             },
-            onEditTodoClick = { todo ->
-                navController.navigate(AddTodoRoute(todo.id))
+            onEditTodoClick = { todoId ->
+                navController.navigate(AddTodoRoute(todoId))
             },
             onShowSnackbar = onShowSnackbar,
         ) {

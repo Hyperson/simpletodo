@@ -1,6 +1,5 @@
 package com.wasaap.androidstarterkit.feature.addedittodo
 
-import androidx.annotation.StringRes
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.wasaap.androidstarterkit.core.domain.AddTodoUseCase
@@ -13,9 +12,12 @@ import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 @HiltViewModel(assistedFactory = AddTodoViewModel.Factory::class)
@@ -25,15 +27,20 @@ class AddTodoViewModel @AssistedInject constructor(
     private val updateTodoCompletedUseCase: UpdateTodoCompletedUseCase,
     @Assisted val todoId: String?,
 ) : ViewModel() {
-    private val _uiState = MutableStateFlow<AddTodoUiState>(AddTodoUiState.Loading)
 
+    private val _uiState = MutableStateFlow(AddTodoUiState())
     val uiState: StateFlow<AddTodoUiState> = _uiState.asStateFlow()
+
+    private val _events = MutableSharedFlow<AddTodoUiEvent>()
+    val events: SharedFlow<AddTodoUiEvent> = _events
 
     init {
         if (todoId == null) {
-            _uiState.value = AddTodoUiState.Add(
+            _uiState.value = AddTodoUiState(
+                isLoading = false,
                 name = "",
-                done = false
+                done = false,
+                isEditMode = false
             )
         } else {
             viewModelScope.launch {
@@ -41,21 +48,21 @@ class AddTodoViewModel @AssistedInject constructor(
                     when (result) {
                         is Result.Success -> {
                             val todo = result.data
-                            _uiState.value = AddTodoUiState.Edit(
+                            _uiState.value = AddTodoUiState(
+                                isLoading = false,
                                 name = todo.name,
-                                done = todo.done
+                                done = todo.done,
+                                isEditMode = true
                             )
                         }
-
                         is Result.Error -> {
-                            _uiState.value = AddTodoUiState.Error(
-                                result.exception.message.toString(),
-                                R.string.feature_addedittodo_ok
+                            _uiState.value = _uiState.value.copy(
+                                isLoading = false,
+                                error = result.exception.message
                             )
                         }
-
                         is Result.Loading -> {
-                            _uiState.value = AddTodoUiState.Loading
+                            _uiState.value = _uiState.value.copy(isLoading = true)
                         }
                     }
                 }
@@ -64,73 +71,50 @@ class AddTodoViewModel @AssistedInject constructor(
     }
 
     fun onNameChanged(newName: String) {
-        val current = _uiState.value
-        when (current) {
-            is AddTodoUiState.Edit -> _uiState.value = current.copy(name = newName)
-            is AddTodoUiState.Add -> _uiState.value = current.copy(name = newName)
-            else -> Unit
-        }
+        _uiState.update { it.copy(name = newName) }
     }
 
     fun onDoneChanged(newDone: Boolean) {
-        val current = _uiState.value
-        when (current) {
-            is AddTodoUiState.Edit -> _uiState.value = current.copy(done = newDone)
-            is AddTodoUiState.Add -> _uiState.value = current.copy(done = newDone)
-            else -> Unit
-        }
+        _uiState.update { it.copy(done = newDone) }
     }
 
     fun onSave() {
         val current = _uiState.value
         viewModelScope.launch {
-            _uiState.value = AddTodoUiState.Loading
-            when (current) {
-                is AddTodoUiState.Add -> {
-                    val newTodo = NewTodo(current.name, current.done)
+            _uiState.update { it.copy(isLoading = true, error = null) }
 
-                    addTodoUseCase(newTodo).collect { result ->
-                        when (result) {
-                            is Result.Success -> {
-                                _uiState.value = AddTodoUiState.AddSuccess
-                            }
-
-                            is Result.Error -> _uiState.value =
-                                AddTodoUiState.Error(
-                                    result.exception.message.toString(),
-                                    R.string.feature_addedittodo_ok
-                                )
-
-                            is Result.Loading -> _uiState.value = AddTodoUiState.Loading
-                        }
-                    }
+            if (current.isEditMode) {
+                val updateTodo = UpdateTodo(todoId ?: "", current.name, current.done)
+                updateTodoCompletedUseCase(updateTodo).collect { result ->
+                    handleResult(result, isEdit = true)
                 }
-
-                is AddTodoUiState.Edit -> {
-                    val updateTodo = UpdateTodo(todoId ?: "", current.name, current.done)
-
-                    updateTodoCompletedUseCase(updateTodo).collect { result ->
-                        when (result) {
-                            is Result.Success -> {
-                                _uiState.value = AddTodoUiState.UpdateSuccess
-                            }
-
-                            is Result.Error -> _uiState.value =
-                                AddTodoUiState.Error(
-                                    result.exception.message.toString(),
-                                    R.string.feature_addedittodo_ok
-                                )
-
-                            is Result.Loading -> _uiState.value = AddTodoUiState.Loading
-                        }
-                    }
+            } else {
+                val newTodo = NewTodo(current.name, current.done)
+                addTodoUseCase(newTodo).collect { result ->
+                    handleResult(result, isEdit = false)
                 }
-
-                else -> Unit
             }
         }
     }
 
+    private suspend fun handleResult(result: Result<*>, isEdit: Boolean) {
+        when (result) {
+            is Result.Success -> {
+                _events.emit(
+                    if (isEdit) AddTodoUiEvent.UpdateSuccess
+                    else AddTodoUiEvent.AddSuccess
+                )
+            }
+            is Result.Error -> {
+                _uiState.update {
+                    it.copy(isLoading = false, error = result.exception.message)
+                }
+            }
+            is Result.Loading -> {
+                _uiState.update { it.copy(isLoading = true) }
+            }
+        }
+    }
 
     @AssistedFactory
     interface Factory {
@@ -138,22 +122,15 @@ class AddTodoViewModel @AssistedInject constructor(
     }
 }
 
-sealed interface AddTodoUiState {
-    object Loading : AddTodoUiState
+data class AddTodoUiState(
+    val isLoading: Boolean = false,
+    val name: String = "",
+    val done: Boolean = false,
+    val isEditMode: Boolean = false,
+    val error: String? = null
+)
 
-    object AddSuccess : AddTodoUiState
-
-    object UpdateSuccess : AddTodoUiState
-
-    data class Add(
-        val name: String,
-        val done: Boolean
-    ) : AddTodoUiState
-
-    data class Edit(
-        val name: String,
-        val done: Boolean
-    ) : AddTodoUiState
-
-    data class Error(val message: String, @param:StringRes val action: Int) : AddTodoUiState
+sealed interface AddTodoUiEvent {
+    object AddSuccess : AddTodoUiEvent
+    object UpdateSuccess : AddTodoUiEvent
 }

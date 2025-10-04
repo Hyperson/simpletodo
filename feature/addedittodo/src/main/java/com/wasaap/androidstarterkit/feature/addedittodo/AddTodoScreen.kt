@@ -34,30 +34,45 @@ internal fun AddTodoScreen(
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
-    AddTodoScreen(
+    val added = stringResource(R.string.feature_addedittodo_add_success)
+    val updated = stringResource(R.string.feature_addedittodo_update_success)
+
+    val ok = stringResource(R.string.feature_addedittodo_ok)
+
+    LaunchedEffect(Unit) {
+        viewModel.events.collect { event ->
+            when (event) {
+                is AddTodoUiEvent.AddSuccess -> {
+                    onSuccess()
+                    onShowSnackbar(added, ok)
+                }
+                is AddTodoUiEvent.UpdateSuccess -> {
+                    onSuccess()
+                    onShowSnackbar(updated, ok)
+                }
+            }
+        }
+    }
+
+    AddTodoContent(
         uiState = uiState,
         onNameChanged = viewModel::onNameChanged,
         onDoneChanged = viewModel::onDoneChanged,
         onSave = viewModel::onSave,
-        onShowSnackbar = onShowSnackbar,
-        onSuccess = onSuccess,
         modifier = modifier,
     )
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-internal fun AddTodoScreen(
+private fun AddTodoContent(
     uiState: AddTodoUiState,
     onNameChanged: (String) -> Unit,
     onDoneChanged: (Boolean) -> Unit,
     onSave: () -> Unit,
-    onShowSnackbar: suspend (String, String?) -> Boolean,
-    onSuccess: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    when (uiState) {
-        is AddTodoUiState.Loading -> {
+    when {
+        uiState.isLoading -> {
             Box(
                 modifier = modifier.fillMaxSize(),
                 contentAlignment = Alignment.Center,
@@ -66,30 +81,22 @@ internal fun AddTodoScreen(
             }
         }
 
-        is AddTodoUiState.Edit -> {
-            TodoScreen(
-                title = stringResource(R.string.feature_addedittodo_edit_todo),
-                name = uiState.name,
-                done = uiState.done,
-                onNameChanged = onNameChanged,
-                onDoneChanged = onDoneChanged,
-                onSave = onSave,
-                modifier = modifier,
-            )
-        }
-
-        is AddTodoUiState.Error -> {
+        uiState.error != null -> {
             Box(
                 modifier = modifier.fillMaxSize(),
                 contentAlignment = Alignment.Center,
             ) {
-                Text(stringResource(R.string.feature_addedittodo_edit_todo, uiState.message))
+                Text(uiState.error)
             }
         }
 
-        is AddTodoUiState.Add -> {
-            TodoScreen(
-                title = stringResource(R.string.feature_addedittodo_add_todo),
+        else -> {
+            AddTodoScreen(
+                title = if (uiState.isEditMode) {
+                    stringResource(R.string.feature_addedittodo_edit_todo)
+                } else {
+                    stringResource(R.string.feature_addedittodo_add_todo)
+                },
                 name = uiState.name,
                 done = uiState.done,
                 onNameChanged = onNameChanged,
@@ -97,34 +104,13 @@ internal fun AddTodoScreen(
                 onSave = onSave,
                 modifier = modifier,
             )
-        }
-
-        is AddTodoUiState.AddSuccess -> {
-
-            val added = stringResource(R.string.feature_addedittodo_add_success)
-            val ok = stringResource(R.string.feature_addedittodo_ok)
-
-            LaunchedEffect(uiState) {
-                onSuccess()
-                onShowSnackbar(added, ok)
-            }
-        }
-
-        is AddTodoUiState.UpdateSuccess -> {
-            val updated = stringResource(R.string.feature_addedittodo_update_success)
-            val ok = stringResource(R.string.feature_addedittodo_ok)
-
-            LaunchedEffect(uiState) {
-                onSuccess()
-                onShowSnackbar(updated, ok)
-            }
         }
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TodoScreen(
+internal fun AddTodoScreen(
     title: String,
     name: String,
     done: Boolean,
