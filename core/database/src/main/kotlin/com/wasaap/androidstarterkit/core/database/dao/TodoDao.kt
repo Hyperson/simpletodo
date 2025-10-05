@@ -11,7 +11,7 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface TodoDao {
 
-    @Query("SELECT * FROM todos")
+    @Query("SELECT * FROM todos WHERE isDeleted = 0")
     fun getTodosStream(): Flow<List<TodoEntity>>
 
     @Query("SELECT * FROM todos WHERE isSynced = 0")

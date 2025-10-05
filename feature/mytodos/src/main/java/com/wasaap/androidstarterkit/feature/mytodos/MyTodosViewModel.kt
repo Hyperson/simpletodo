@@ -15,57 +15,66 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-
 @HiltViewModel
 class MyTodosViewModel @Inject constructor(
     private val getTodosUseCase: GetTodosPageUseCase,
     private val deleteTodoUseCase: DeleteTodoUseCase
 ) : ViewModel() {
 
-    private val _uiState = MutableStateFlow<TodoUiState>(TodoUiState.Loading)
-    val uiState: StateFlow<TodoUiState> = _uiState.asStateFlow()
+    private val _state = MutableStateFlow<TodoState>(TodoState.Loading)
+    val state: StateFlow<TodoState> = _state.asStateFlow()
 
-    private val _events = MutableSharedFlow<TodoUiEvent>()
-    val events: SharedFlow<TodoUiEvent> = _events
+    private val _effect = MutableSharedFlow<TodoEffect>()
+    val effect: SharedFlow<TodoEffect> = _effect
 
+    private val _intent = MutableSharedFlow<TodoIntent>()
 
     init {
-        refreshTodos()
+        processIntents()
+
+        sendIntent(TodoIntent.LoadTodos)
     }
 
-    fun refreshTodos() {
+    fun sendIntent(intent: TodoIntent) {
+        viewModelScope.launch { _intent.emit(intent) }
+    }
+
+    private fun processIntents() {
         viewModelScope.launch {
-            getTodosUseCase().collect { result ->
-                when (result) {
-                    is Result.Success -> {
-                        _uiState.value = TodoUiState.Success(result.data.map { it.toUiModel() })
-                    }
-
-                    is Result.Error -> {
-                        _uiState.value = TodoUiState.Error(
-                            result.exception.message
-                        )
-                    }
-
-                    is Result.Loading -> {
-                        _uiState.value = TodoUiState.Loading
-                    }
+            _intent.collect { intent ->
+                when (intent) {
+                    is TodoIntent.LoadTodos -> loadTodos()
+                    is TodoIntent.DeleteTodo -> deleteTodo(intent.todo)
                 }
             }
         }
     }
 
-    fun deleteTodo(todo: TodoUiModel) {
+    private fun loadTodos() {
+        viewModelScope.launch {
+            getTodosUseCase().collect { result ->
+                when (result) {
+                    is Result.Loading -> _state.value = TodoState.Loading
+                    is Result.Success -> _state.value =
+                        TodoState.Success(result.data.map { it.toUiModel() })
+
+                    is Result.Error -> _state.value =
+                        TodoState.Error(result.exception.message)
+                }
+            }
+        }
+    }
+
+    private fun deleteTodo(todo: TodoUiModel) {
         viewModelScope.launch {
             deleteTodoUseCase(todo.id).collect { result ->
                 when (result) {
                     is Result.Success -> {
-                        //TODO add strings xml
-                        _events.emit(TodoUiEvent.ShowMessage("Todo deleted"))
+                        _effect.emit(TodoEffect.ShowMessage("Todo deleted"))
                     }
 
                     is Result.Error -> {
-                        _events.emit(TodoUiEvent.ShowMessage("Failed to delete: ${result.exception.message}"))
+                        _effect.emit(TodoEffect.ShowMessage("Failed: ${result.exception.message}"))
                     }
 
                     is Result.Loading -> Unit
@@ -75,14 +84,19 @@ class MyTodosViewModel @Inject constructor(
     }
 }
 
-sealed interface TodoUiState {
-    object Loading : TodoUiState
-    data class Success(val todos: List<TodoUiModel>) : TodoUiState
-    data class Error(val message: String?) : TodoUiState
+sealed interface TodoEffect {
+    data class ShowMessage(val message: String) : TodoEffect
 }
 
-sealed interface TodoUiEvent {
-    data class ShowMessage(val message: String) : TodoUiEvent
+sealed interface TodoState {
+    object Loading : TodoState
+    data class Success(val todos: List<TodoUiModel>) : TodoState
+    data class Error(val message: String?) : TodoState
+}
+
+sealed interface TodoIntent {
+    object LoadTodos : TodoIntent
+    data class DeleteTodo(val todo: TodoUiModel) : TodoIntent
 }
 
 data class TodoUiModel(val id: String, val name: String, val isDone: Boolean)

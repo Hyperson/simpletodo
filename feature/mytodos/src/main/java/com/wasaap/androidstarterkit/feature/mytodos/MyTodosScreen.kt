@@ -38,50 +38,56 @@ internal fun MyTodosScreen(
     onShowSnackbar: suspend (String, String?) -> Boolean,
     viewModel: MyTodosViewModel = hiltViewModel(),
 ) {
-    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-
+    val state by viewModel.state.collectAsStateWithLifecycle()
     val ok = stringResource(R.string.feature_mytodos_ok)
 
     LaunchedEffect(Unit) {
-        viewModel.events.collect { event ->
-            when (event) {
-                is TodoUiEvent.ShowMessage -> {
-                    onShowSnackbar(event.message, ok)
+        viewModel.effect.collect { effect ->
+            when (effect) {
+                is TodoEffect.ShowMessage -> {
+                    onShowSnackbar(effect.message, ok)
                 }
             }
         }
     }
 
     TodoScreen(
-        uiState = uiState,
+        state = state,
         onAddTodoClick = onAddTodoClick,
         onEditTodoClick = onEditTodoClick,
         modifier = modifier,
-        onDeleteTodoClick = { viewModel.deleteTodo(it) }
+        onDeleteTodoClick = { todo ->
+            viewModel.sendIntent(TodoIntent.DeleteTodo(todo))
+        }
     )
 }
 
 @Composable
 internal fun TodoScreen(
-    uiState: TodoUiState,
+    state: TodoState,
     onAddTodoClick: () -> Unit,
     onEditTodoClick: (String) -> Unit,
     onDeleteTodoClick: (TodoUiModel) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    when (uiState) {
-        TodoUiState.Loading -> Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-            TodoLoadingWheel()
-        }
-
-        is TodoUiState.Error -> Box(
+    when (state) {
+        TodoState.Loading -> Box(
             Modifier.fillMaxSize(),
             contentAlignment = Alignment.Center
         ) {
-            Text(stringResource(id = R.string.feature_mytodos_error_list))
+            TodoLoadingWheel()
         }
 
-        is TodoUiState.Success -> Scaffold(
+        is TodoState.Error -> Box(
+            Modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center
+        ) {
+            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                Text(stringResource(R.string.feature_mytodos_error_list))
+            }
+        }
+
+        is TodoState.Success -> Scaffold(
             floatingActionButton = {
                 FloatingActionButton(onClick = onAddTodoClick) {
                     Icon(TodoIcons.Add, contentDescription = null)
@@ -92,7 +98,7 @@ internal fun TodoScreen(
                 contentPadding = padding,
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                items(uiState.todos, key = { it.id }) { todo ->
+                items(state.todos, key = { it.id }) { todo ->
                     Card(
                         modifier = Modifier
                             .fillMaxWidth()

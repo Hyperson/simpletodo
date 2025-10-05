@@ -105,6 +105,9 @@ class TodoRepositoryImpl @Inject constructor(
                 !pendingTodo.isDeleted && pendingTodo.remoteId == null -> pushNewTodo(pendingTodo)
                 !pendingTodo.isDeleted -> pushUpdatedTodo(pendingTodo)
                 pendingTodo.remoteId != null -> pushDeletedTodo(pendingTodo)
+                pendingTodo.isDeleted && pendingTodo.remoteId == null -> {
+                    todoDao.deleteByLocalId(pendingTodo.localId)
+                }
             }
         }
     }
