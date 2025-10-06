@@ -120,9 +120,9 @@ To enable backend synchronization and testing:
 1. Get your free API key from [CrudCrud](https://www.crudcrud.com/).
 2. Open the project's **secrets** file.
 3. Add the following entry:
-   ```
-   BACKEND_API=<your_crudcrud_api_key_here> e.g 3fd29b9dbde245749573a991ea267a76
-   ```
+```
+BACKEND_API=<your_crudcrud_api_key_here> e.g 3fd29b9dbde245749573a991ea267a76
+```
 
 ### License
 
@@ -136,6 +136,3 @@ Uses a custom starter-kit plugin system to simplify Gradle configuration.
 Designed as a base template for future Android projects.
 
 ---
-
-
-
