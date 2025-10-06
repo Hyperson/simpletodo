@@ -5,6 +5,19 @@ The app allows users to **create, edit, update, and delete tasks** offline, with
 
 **Note:** Unit and instrumentation tests are being implemented.
 
+## Table of Contents
+- [Project Overview](#project-overview)
+- [Features](#features)
+- [Tech Stack](#tech-stack)
+- [Project Structure](#project-structure)
+- [Dependency Graph](#dependency-graph)
+- [Build & Run](#build--run)
+  - [Prerequisites](#prerequisites)
+  - [Commands](#commands)
+  - [Configuration](#configuration)
+- [License](#license)
+- [Notes](#notes)
+  
 ---
 
 ## Project Overview
