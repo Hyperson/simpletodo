@@ -124,12 +124,12 @@ To enable backend synchronization and testing:
    BACKEND_API=<your_crudcrud_api_key_here> e.g 3fd29b9dbde245749573a991ea267a76
    ```
 
-#### License
+### License
 
 This project is licensed under the MIT License.
 You are free to use, modify, and distribute it with attribution.
 
-##### Notes
+### Notes
 
 Uses a custom starter-kit plugin system to simplify Gradle configuration.
 
