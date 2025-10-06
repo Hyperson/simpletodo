@@ -13,7 +13,6 @@ The app allows users to **create, edit, update, and delete tasks** offline, with
 - [Dependency Graph](#dependency-graph)
 - [Build & Run](#build--run)
   - [Prerequisites](#prerequisites)
-  - [Commands](#commands)
   - [Configuration](#configuration)
 - [License](#license)
 - [Notes](#notes)
@@ -105,14 +104,6 @@ The project uses a modular Gradle setup with a version catalog (`libs.versions.t
 - Android Studio Ladybug or newer  
 - JDK 17+  
 - Gradle 8.11+  
-
-### Commands
-
-```bash
-# Clone the repository
-git clone https://github.com/Hyperson/androidstarterkit.git
-cd androidstarterkit
-```
 
 ### Configuration
 
