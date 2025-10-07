@@ -15,7 +15,6 @@ The app allows users to **create, edit, update, and delete tasks** offline, with
   - [Prerequisites](#prerequisites)
   - [Configuration](#configuration)
 - [License](#license)
-- [Notes](#notes)
   
 ---
 
