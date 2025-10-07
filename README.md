@@ -101,7 +101,6 @@ androidstarterkit/
 The project uses a modular Gradle setup with a version catalog (`libs.versions.toml`) and a custom `starter-kit` plugin system to simplify configuration.
 
 ### Prerequisites
-- Android Studio Ladybug or newer  
 - JDK 17+  
 - Gradle 8.11+  
 
