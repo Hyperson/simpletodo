@@ -22,8 +22,8 @@ The app allows users to **create, edit, update, and delete tasks** offline, with
 
 - **App name:** Android Starter Kit Todo
 - **Design Pattern - Architecture:**
-  - MVVM in *My Todos* and *Settings* screens
-  - MVI in *Add/Edit Todo* screen
+  - MVVM in *Add/Edit Todo* and *Settings* screens
+  - MVI in *My Todos* screen
 - **Offline-first design:** Tasks are stored locally with background sync support.
 - **Minimum SDK:** 21
 - **Target SDK:** 35
