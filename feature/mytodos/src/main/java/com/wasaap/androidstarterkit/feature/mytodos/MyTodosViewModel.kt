@@ -8,10 +8,11 @@ import com.wasaap.androidstarterkit.core.domain.common.Result
 import com.wasaap.androidstarterkit.core.model.Todo
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -21,8 +22,20 @@ class MyTodosViewModel @Inject constructor(
     private val deleteTodoUseCase: DeleteTodoUseCase
 ) : ViewModel() {
 
-    private val _state = MutableStateFlow<TodoState>(TodoState.Loading)
-    val state: StateFlow<TodoState> = _state.asStateFlow()
+    val state: StateFlow<TodoState> = getTodosUseCase()
+        .map { result ->
+            when (result) {
+                is Result.Loading -> TodoState.Loading
+                is Result.Success -> TodoState.Success(result.data.map { it.toUiModel() })
+                is Result.Error -> TodoState.Error(result.exception.message)
+            }
+        }
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5_000),
+            initialValue = TodoState.Loading,
+        )
+
 
     private val _effect = MutableSharedFlow<TodoEffect>()
     val effect: SharedFlow<TodoEffect> = _effect
@@ -43,23 +56,8 @@ class MyTodosViewModel @Inject constructor(
         viewModelScope.launch {
             _intent.collect { intent ->
                 when (intent) {
-                    is TodoIntent.LoadTodos -> loadTodos()
+                    is TodoIntent.LoadTodos -> Unit
                     is TodoIntent.DeleteTodo -> deleteTodo(intent.todo)
-                }
-            }
-        }
-    }
-
-    private fun loadTodos() {
-        viewModelScope.launch {
-            getTodosUseCase().collect { result ->
-                when (result) {
-                    is Result.Loading -> _state.value = TodoState.Loading
-                    is Result.Success -> _state.value =
-                        TodoState.Success(result.data.map { it.toUiModel() })
-
-                    is Result.Error -> _state.value =
-                        TodoState.Error(result.exception.message)
                 }
             }
         }

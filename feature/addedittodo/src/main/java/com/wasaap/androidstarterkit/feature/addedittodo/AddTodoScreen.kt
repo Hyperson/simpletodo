@@ -16,8 +16,12 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -64,7 +68,7 @@ internal fun AddTodoScreen(
 }
 
 @Composable
-private fun AddTodoContent(
+fun AddTodoContent(
     uiState: AddTodoUiState,
     onNameChanged: (String) -> Unit,
     onDoneChanged: (Boolean) -> Unit,
@@ -119,6 +123,12 @@ internal fun AddTodoScreen(
     onSave: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    val focusRequester = remember { FocusRequester() }
+
+    LaunchedEffect(Unit) {
+        focusRequester.requestFocus()
+    }
+
     Column(
         modifier = modifier
             .padding(16.dp)
@@ -134,14 +144,16 @@ internal fun AddTodoScreen(
             value = name,
             onValueChange = onNameChanged,
             label = { Text(stringResource(R.string.feature_addedittodo_name)) },
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .focusRequester(focusRequester),
         )
 
         Row(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            Checkbox(checked = done, onCheckedChange = onDoneChanged)
+            Checkbox(checked = done, onCheckedChange = onDoneChanged, modifier = Modifier.testTag("todo_completed_checkbox"))
             Text(stringResource(R.string.feature_addedittodo_completed))
             TodoTextButton(
                 onClick = onSave,

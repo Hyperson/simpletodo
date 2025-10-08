@@ -90,7 +90,7 @@ internal fun TodoScreen(
         is TodoState.Success -> Scaffold(
             floatingActionButton = {
                 FloatingActionButton(onClick = onAddTodoClick) {
-                    Icon(TodoIcons.Add, contentDescription = null)
+                    Icon(TodoIcons.Add, contentDescription = "Add Todo")
                 }
             }
         ) { padding ->
