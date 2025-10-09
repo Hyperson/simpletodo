@@ -30,8 +30,23 @@ internal fun SettingsScreen(
 ) {
     val settingsUiState by viewModel.settingsUiState.collectAsStateWithLifecycle()
 
-    if (settingsUiState is SettingsUiState.Success) {
-        val settings = (settingsUiState as SettingsUiState.Success).settings
+    SettingsContent(
+        uiState = settingsUiState,
+        onSelectTheme = { config ->
+            viewModel.updateDarkThemeConfig(config)
+        },
+        onShowSnackbar = onShowSnackbar
+    )
+}
+
+@Composable
+internal fun SettingsContent(
+    uiState: SettingsUiState,
+    onSelectTheme: (DarkThemeConfig) -> Unit,
+    onShowSnackbar: suspend (String, String?) -> Boolean,
+) {
+    if (uiState is SettingsUiState.Success) {
+        val settings = uiState.settings
 
         Column(
             modifier = Modifier
@@ -48,17 +63,17 @@ internal fun SettingsScreen(
             DarkThemeOptionRow(
                 text = stringResource(id = R.string.feature_settings_appearance_system_default),
                 selected = settings.darkThemeConfig == DarkThemeConfig.FOLLOW_SYSTEM,
-                onClick = { viewModel.updateDarkThemeConfig(DarkThemeConfig.FOLLOW_SYSTEM) },
+                onClick = { onSelectTheme(DarkThemeConfig.FOLLOW_SYSTEM) },
             )
             DarkThemeOptionRow(
                 text = stringResource(id = R.string.feature_settings_appearance_system_light),
                 selected = settings.darkThemeConfig == DarkThemeConfig.LIGHT,
-                onClick = { viewModel.updateDarkThemeConfig(DarkThemeConfig.LIGHT) },
+                onClick = { onSelectTheme(DarkThemeConfig.LIGHT) },
             )
             DarkThemeOptionRow(
                 text = stringResource(id = R.string.feature_settings_appearance_system_dark),
                 selected = settings.darkThemeConfig == DarkThemeConfig.DARK,
-                onClick = { viewModel.updateDarkThemeConfig(DarkThemeConfig.DARK) },
+                onClick = { onSelectTheme(DarkThemeConfig.DARK) },
             )
         }
     }
@@ -89,6 +104,5 @@ private fun DarkThemeOptionRow(
         )
     }
 }
-
 
 //TODO previews on all screens is needed
