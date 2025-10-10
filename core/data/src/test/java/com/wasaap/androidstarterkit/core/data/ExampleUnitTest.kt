@@ -1,4 +1,4 @@
-package com.wasaap.domain
+package com.wasaap.androidstarterkit.core.data
 
 import org.junit.Test
 
