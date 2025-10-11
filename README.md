@@ -3,9 +3,9 @@
 A simple **offline-first Todo app** using a modular Android architecture.  
 The app allows users to **create, edit, update, and delete tasks** offline, with data syncing handled automatically when network connectivity is available.
 
-**Note:** Unit and instrumentation tests are being implemented.
-
 **Disclaimer:** This project is inspired by [Now in Android](https://github.com/android/nowinandroid) by Google. Portions of the source code are used under the terms of the Apache License 2.0.
+
+**Note:** Unit and instrumentation tests are being implemented.
 
 ## Table of Contents
 - [Project Overview](#project-overview)
