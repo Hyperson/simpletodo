@@ -5,6 +5,8 @@ The app allows users to **create, edit, update, and delete tasks** offline, with
 
 **Note:** Unit and instrumentation tests are being implemented.
 
+**Disclaimer:** This project is inspired by [Now in Android](https://github.com/android/nowinandroid) by Google. Portions of the source code are used under the terms of the Apache License 2.0.
+
 ## Table of Contents
 - [Project Overview](#project-overview)
 - [Features](#features)
@@ -112,10 +114,4 @@ To enable backend synchronization and testing:
 ```
 BACKEND_API=<your_crudcrud_api_key_here> e.g 3fd29b9dbde245749573a991ea267a76
 ```
-
-### License
-
-This project is licensed under the MIT License.
-You are free to use, modify, and distribute it with attribution.
-
 ---
