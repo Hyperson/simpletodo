@@ -1,9 +1,11 @@
 package com.wasaap.androidstarterkit.core.data.di
 
 
+import com.wasaap.androidstarterkit.core.data.repository.SpeechRepositoryImpl
 import com.wasaap.androidstarterkit.core.data.repository.TodoRepositoryImpl
 import com.wasaap.androidstarterkit.core.data.repository.UserDataRepositoryImpl
 import com.wasaap.androidstarterkit.core.data.sync.Syncable
+import com.wasaap.androidstarterkit.core.domain.repository.SpeechRepository
 import com.wasaap.androidstarterkit.core.domain.repository.TodoRepository
 import com.wasaap.androidstarterkit.core.domain.repository.UserDataRepository
 import dagger.Binds
@@ -23,6 +25,11 @@ abstract class DataModule {
     internal abstract fun bindsUserDataRepository(
         userDataRepository: UserDataRepositoryImpl,
     ): UserDataRepository
+
+    @Binds
+    internal abstract fun bindSpeechRepository(
+        speechRepository: SpeechRepositoryImpl
+    ): SpeechRepository
 
 
     @Binds

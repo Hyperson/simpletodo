@@ -5,11 +5,16 @@
     <string name="feature_addedittodo_name">Name</string>
     <string name="feature_addedittodo_completed">Completed</string>
     <string name="feature_addedittodo_save">Save</string>
+    <string name="feature_addedittodo_record">Record</string>
     <string name="feature_addedittodo_add_success">Todo added</string>
     <string name="feature_addedittodo_update_success">Todo updated</string>
     <string name="feature_addedittodo_ok">OK</string>
     <string name="feature_addedittodo_error">Error: %s</string>
     <string name="feature_addedittodo_error_add">Add error</string>
     <string name="feature_addedittodo_error_update">Update error</string>
+    <string name="feature_addedittodo_mic_permission_required">Microphone Permission Required</string>
+    <string name="feature_addedittodo_mic_permission_required_description">Please allow microphone access to record audio.</string>
+    <string name="feature_addedittodo_recording">Recording…</string>
+    <string name="feature_addedittodo_start_recording">Start Recording</string>
 
 </resources>

@@ -30,8 +30,8 @@ import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavDestination.Companion.hierarchy
 import com.wasaap.androidstarterkit.navigation.TodoNavHost
-import com.wasaap.core.androidstarterkit.designsystem.component.TodoBackground
-import com.wasaap.core.androidstarterkit.designsystem.component.TodoNavigationSuiteScaffold
+import com.wasaap.core.androidstarterkit.core.designsystem.component.TodoBackground
+import com.wasaap.core.androidstarterkit.core.designsystem.component.TodoNavigationSuiteScaffold
 import kotlin.reflect.KClass
 
 @Composable

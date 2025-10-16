@@ -2,8 +2,8 @@ package com.wasaap.androidstarterkit.feature.mytodos
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.wasaap.androidstarterkit.core.domain.DeleteTodoUseCase
-import com.wasaap.androidstarterkit.core.domain.GetTodosPageUseCase
+import com.wasaap.androidstarterkit.core.domain.usecase.todo.DeleteTodoUseCase
+import com.wasaap.androidstarterkit.core.domain.usecase.todo.GetTodosPageUseCase
 import com.wasaap.androidstarterkit.core.domain.common.Result
 import com.wasaap.androidstarterkit.core.model.Todo
 import dagger.hilt.android.lifecycle.HiltViewModel

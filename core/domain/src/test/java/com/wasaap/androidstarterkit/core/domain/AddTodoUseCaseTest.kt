@@ -6,6 +6,7 @@ import com.wasaap.androidstarterkit.core.testing.util.MainDispatcherRule
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
 import com.wasaap.androidstarterkit.core.domain.common.Result
+import com.wasaap.androidstarterkit.core.domain.usecase.todo.AddTodoUseCase
 import org.junit.Rule
 import org.junit.Test
 import kotlin.test.assertEquals

@@ -51,7 +51,7 @@ include(":core:datastore")
 include(":core:datastore-proto")
 include(":core:datastore-test")
 include(":sync:work")
-
+include(":core:speech")
 
 
 check(JavaVersion.current().isCompatibleWith(JavaVersion.VERSION_17)) {

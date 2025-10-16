@@ -27,8 +27,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.wasaap.core.androidstarterkit.designsystem.component.TodoLoadingWheel
-import com.wasaap.core.androidstarterkit.designsystem.icon.TodoIcons
+import com.wasaap.core.androidstarterkit.core.designsystem.component.TodoLoadingWheel
+import com.wasaap.core.androidstarterkit.core.designsystem.icon.TodoIcons
 
 @Composable
 internal fun MyTodosScreen(

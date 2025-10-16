@@ -1,6 +1,9 @@
 package com.wasaap.androidstarterkit.core.domain
 
 import com.wasaap.androidstarterkit.core.domain.common.Result
+import com.wasaap.androidstarterkit.core.domain.usecase.todo.AddTodoUseCase
+import com.wasaap.androidstarterkit.core.domain.usecase.todo.GetTodoByIdUseCase
+import com.wasaap.androidstarterkit.core.domain.usecase.todo.UpdateTodoCompletedUseCase
 import com.wasaap.androidstarterkit.core.model.NewTodo
 import com.wasaap.androidstarterkit.core.model.UpdateTodo
 import com.wasaap.androidstarterkit.core.testing.repository.TestTodoRepository

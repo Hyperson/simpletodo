@@ -20,7 +20,7 @@ dependencies {
     api(projects.core.database)
     api(projects.core.network)
     api(projects.core.domain)
-
+    api(projects.core.speech)
 
     testImplementation(libs.kotlinx.coroutines.test)
     testImplementation(libs.kotlinx.serialization.json)

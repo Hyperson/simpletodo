@@ -2,10 +2,12 @@ package com.wasaap.androidstarterkit.feature.addedittodo
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.wasaap.androidstarterkit.core.domain.AddTodoUseCase
-import com.wasaap.androidstarterkit.core.domain.GetTodoByIdUseCase
 import com.wasaap.androidstarterkit.core.domain.common.Result
-import com.wasaap.androidstarterkit.core.domain.UpdateTodoCompletedUseCase
+import com.wasaap.androidstarterkit.core.domain.usecase.speech.ObserveSpeechUseCase
+import com.wasaap.androidstarterkit.core.domain.usecase.speech.StartSpeechListeningUseCase
+import com.wasaap.androidstarterkit.core.domain.usecase.todo.AddTodoUseCase
+import com.wasaap.androidstarterkit.core.domain.usecase.todo.GetTodoByIdUseCase
+import com.wasaap.androidstarterkit.core.domain.usecase.todo.UpdateTodoCompletedUseCase
 import com.wasaap.androidstarterkit.core.model.NewTodo
 import com.wasaap.androidstarterkit.core.model.UpdateTodo
 import dagger.assisted.Assisted
@@ -25,6 +27,8 @@ class AddTodoViewModel @AssistedInject constructor(
     private val getTodoByIdUseCase: GetTodoByIdUseCase,
     private val addTodoUseCase: AddTodoUseCase,
     private val updateTodoCompletedUseCase: UpdateTodoCompletedUseCase,
+    private val startSpeechListeningUseCase: StartSpeechListeningUseCase,
+    private val observeSpeechUseCase: ObserveSpeechUseCase,
     @Assisted val todoId: String?,
 ) : ViewModel() {
 
@@ -35,6 +39,11 @@ class AddTodoViewModel @AssistedInject constructor(
     val events: SharedFlow<AddTodoUiEvent> = _events
 
     init {
+        observeSpeech()
+        initializeTodoState()
+    }
+
+    private fun initializeTodoState() {
         if (todoId == null) {
             _uiState.value = AddTodoUiState(
                 isLoading = false,
@@ -55,16 +64,31 @@ class AddTodoViewModel @AssistedInject constructor(
                                 isEditMode = true
                             )
                         }
+
                         is Result.Error -> {
                             _uiState.value = _uiState.value.copy(
                                 isLoading = false,
                                 error = result.exception.message
                             )
                         }
+
                         is Result.Loading -> {
                             _uiState.value = _uiState.value.copy(isLoading = true)
                         }
                     }
+                }
+            }
+        }
+    }
+
+    private fun observeSpeech() {
+        viewModelScope.launch {
+            observeSpeechUseCase().collect { speechState ->
+                _uiState.update {
+                    it.copy(
+                        isRecording = speechState.isListening,
+                        name = speechState.recognizedText.ifBlank { it.name }
+                    )
                 }
             }
         }
@@ -97,6 +121,12 @@ class AddTodoViewModel @AssistedInject constructor(
         }
     }
 
+    fun startVoiceInput() {
+        viewModelScope.launch {
+            startSpeechListeningUseCase()
+        }
+    }
+
     private suspend fun handleResult(result: Result<*>, isEdit: Boolean) {
         when (result) {
             is Result.Success -> {
@@ -105,11 +135,13 @@ class AddTodoViewModel @AssistedInject constructor(
                     else AddTodoUiEvent.AddSuccess
                 )
             }
+
             is Result.Error -> {
                 _uiState.update {
                     it.copy(isLoading = false, error = result.exception.message)
                 }
             }
+
             is Result.Loading -> {
                 _uiState.update { it.copy(isLoading = true) }
             }
@@ -127,6 +159,7 @@ data class AddTodoUiState(
     val name: String = "",
     val done: Boolean = false,
     val isEditMode: Boolean = false,
+    val isRecording: Boolean = false,
     val error: String? = null
 )
 

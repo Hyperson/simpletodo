@@ -5,7 +5,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import com.wasaap.androidstarterkit.feature.mytodos.navigation.TodosBaseRoute
 import com.wasaap.androidstarterkit.feature.mytodos.navigation.TodosRoute
 import com.wasaap.androidstarterkit.feature.settings.navigation.SettingsRoute
-import com.wasaap.core.androidstarterkit.designsystem.icon.TodoIcons
+import com.wasaap.core.androidstarterkit.core.designsystem.icon.TodoIcons
 import kotlin.reflect.KClass
 import com.wasaap.androidstarterkit.feature.mytodos.R as myTodos
 import com.wasaap.androidstarterkit.feature.settings.R as settings

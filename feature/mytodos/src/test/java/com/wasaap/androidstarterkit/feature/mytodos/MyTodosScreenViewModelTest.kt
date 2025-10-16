@@ -1,7 +1,7 @@
 package com.wasaap.androidstarterkit.feature.mytodos
 
-import com.wasaap.androidstarterkit.core.domain.DeleteTodoUseCase
-import com.wasaap.androidstarterkit.core.domain.GetTodosPageUseCase
+import com.wasaap.androidstarterkit.core.domain.usecase.todo.DeleteTodoUseCase
+import com.wasaap.androidstarterkit.core.domain.usecase.todo.GetTodosPageUseCase
 import com.wasaap.androidstarterkit.core.testing.data.todosTestData
 import com.wasaap.androidstarterkit.core.testing.repository.TestTodoRepository
 import com.wasaap.androidstarterkit.core.testing.util.MainDispatcherRule
