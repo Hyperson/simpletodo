@@ -1,7 +1,7 @@
 # Android Starter Kit - Offline Todo App
 
 A simple **offline-first Todo app** using a modular Android architecture.  
-The app allows users to **create, edit, update, and delete tasks** offline, with data syncing handled automatically when network connectivity is available.
+The app allows users to **create, edit, update, delete and record todos via voice** offline, with data syncing handled automatically when network connectivity is available.
 
 **Disclaimer:** This project is inspired by [Now in Android](https://github.com/android/nowinandroid) by Google. Portions of the source code are used under the terms of the Apache License 2.0.
 
@@ -82,6 +82,9 @@ androidstarterkit/
 │ ├── domain/ # Use cases and business logic
 │ ├── model/ # Data models
 │ ├── network/ # Network layer (Retrofit/OkHttp)
+│ ├── speech/ # Speech recognition manager
+│ │   ├── AndroidSpeechRecognizerManager.kt
+│ │   └── SpeechRecognizerManager.kt
 │ └── testing/ # General test utilities
 │
 ├── feature/
